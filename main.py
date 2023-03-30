@@ -1,24 +1,25 @@
 import sys
  
 class Register:
-    def __init__(self, type):
+    def __init__(self, type, value):
         self.type = type
-        self.value = None
-        
-MAR = Register('Address')
-MDR = Register('Data')
-PC = Register('Address')
-ACC = Register('Data')
-CIR = Register('Instruction')
-SR = Register('Status')
+        self.value = value
 
-def ALU(instruction):
-    eval(f'I{instruction}({ACC})')
+class Components:
+    def __init__(self,value):
+        self.value = value
     
-
-main_memory = {f'{i:08b}' : '' for i in range(100)}
-instruction_set = {'ADD':'0000','SUB':'0001','MOV':'0010','LDR':'0011','OUT':'0100','HAlT':'0101','BGT':'0110','BLT':'0111','BEQ':'1000','BRA':'1001','CMP':'1010','STR':'1011','BNE':'1100'}
-registers = [MAR, MDR, PC, ACC, CIR, SR]
+    def execute(self, instruction):
+        eval(f'I{instruction}({ACC}, {self.value})')
+        
+class ControlUnit:
+    def __init__(self):
+        R1 = Register('Data','')
+        R2 = Register('Data','')
+        
+ALU = Register
+def ALU(instruction,data):
+    eval(f'I{instruction}({ACC}, {data})')
 
 def I0000(R0, R1, R2): #ADD
     R0.value = R1.value + R2.value
@@ -49,9 +50,45 @@ def I1010(R0,R1,temp_CMP): #CMP
         
 def I1011(R1,M1): #STR
     main_memory[M1] = registers[R1]
+    
+def binary(num):
+    ans = ''
+    while True:
+        ans += str(num % 2)
+        if num == 1 or num == 0:
+            break
+        num = num // 2
+    ans = ans[::-1]
+    while len(ans) < 8:
+        ans = (ans[::-1]+'0')[::-1]
+    return ans
+
+def decimal(num):
+    values = [(int(num[::-1][i]))*(2**i) for i in range(8)]
+    return sum(values)
+#main_memory = {f'{i:08b}' : i for i in range(100)}
+main_memory = {'00000000': 13, '00000001': 28, '00000010': '0000', '00000011': '0100', '00000100': 4, '00000101': 5, '00000110': 6, '00000111': 7, '00001000': 8, '00001001': 9, '00001010': 10, '00001011': 11, '00001100': 12, '00001101': 13, '00001110': 14, '00001111': 15}
+instruction_set = {'ADD':'0000','SUB':'0001','MOV':'0010','LDR':'0011','OUT':'0100','HAlT':'0101','BGT':'0110','BLT':'0111','BEQ':'1000','BRA':'1001','CMP':'1010','STR':'1011','BNE':'1100'}
+        
+MAR = Register('Address','00000000')
+MDR = Register('Data','00000000')
+PC = Register('Address','00000000')
+ACC = Register('Data','00000000')
+CIR = Register('Instruction','00000000')
+SR = Register('Status','')
+Control
 
         
 def fetch():
+    MAR.value = PC.value
+    PC.value = binary(decimal(PC.value)+1)
+    MDR.value = main_memory[MAR.value]
+    print(MDR.value)
+    if 
+
+fetch()
+    
+print(main_memory)
      
             
     
