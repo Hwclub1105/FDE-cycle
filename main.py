@@ -5,21 +5,14 @@ class Register:
         self.type = type
         self.value = value
 
-class Components:
-    def __init__(self,value):
-        self.value = value
-    
+class Alu:
+    def __init__(self):
+        self.swap = 1
+        self.R1 = Register('Data','')
+        self.R2 = Register('Data','')
+        
     def execute(self, instruction):
         eval(f'I{instruction}({ACC}, {self.value})')
-        
-class ControlUnit:
-    def __init__(self):
-        R1 = Register('Data','')
-        R2 = Register('Data','')
-        
-ALU = Register
-def ALU(instruction,data):
-    eval(f'I{instruction}({ACC}, {data})')
 
 def I0000(R0, R1, R2): #ADD
     R0.value = R1.value + R2.value
@@ -76,7 +69,8 @@ PC = Register('Address','00000000')
 ACC = Register('Data','00000000')
 CIR = Register('Instruction','00000000')
 SR = Register('Status','')
-Control
+ALU = Alu()
+        
 
         
 def fetch():
@@ -84,9 +78,15 @@ def fetch():
     PC.value = binary(decimal(PC.value)+1)
     MDR.value = main_memory[MAR.value]
     print(MDR.value)
-    if 
+    if ALU.swap == 1:
+        ALU.R1.value = MDR.value
+    else:
+        ALU.R2.value = MDR.value
+    ALU.swap *= -1
+    
 
 fetch()
+fetch(print(ALU.R2.value,ALU.R1.value))
     
 print(main_memory)
      
